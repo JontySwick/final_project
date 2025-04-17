@@ -1,6 +1,6 @@
 from rest_framework import status
 from rest_framework.generics import CreateAPIView, RetrieveAPIView
-from rest_framework.permissions import AllowAny, IsAuthenticated
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
@@ -29,7 +29,6 @@ class ProfileView(RetrieveAPIView):
 
 class LoginView(TokenObtainPairView):
     serializer_class = TokenObtainPairSerializer
-    permission_classes = [IsNotAuthenticated]
 
     def post(self, request, *args, **kwargs):
         response = super().post(request, *args, **kwargs)

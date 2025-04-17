@@ -1,4 +1,6 @@
 from rest_framework import serializers
+
+from estates.serializers import EstateSerializer
 from .models import Booking
 from datetime import date
 from django.db.models import Q
@@ -6,7 +8,7 @@ from django.db.models import Q
 
 class BookingSerializer(serializers.ModelSerializer):
     user = serializers.ReadOnlyField(source='user.username')
-    estate = serializers.HiddenField(default=None)
+    estate = EstateSerializer(default=None)
     estate_id = serializers.PrimaryKeyRelatedField(
         queryset=Booking._meta.get_field('estate').related_model.objects.all(),
         source='estate',
@@ -26,6 +28,9 @@ class BookingSerializer(serializers.ModelSerializer):
         end_date = data['end_date']
         estate = data['estate']
         user = self.context['request'].user
+
+        if not user.is_renter:
+            raise serializers.ValidationError("Вы должны быть арендатором для того чтобы иметь возможность бронировать")
 
         if start_date >= end_date:
             raise serializers.ValidationError("Дата начала должна быть раньше даты окончания.")

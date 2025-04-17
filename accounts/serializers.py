@@ -18,6 +18,7 @@ class UserRegisterSerializer(serializers.ModelSerializer):
             is_renter=validated_data.get('is_renter', True),
             is_landlord=validated_data.get('is_landlord', False)
         )
+
         return user
 
 
