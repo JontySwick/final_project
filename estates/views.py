@@ -14,19 +14,18 @@ from accounts.permissions import IsLandlord
 
 class EstateViewSet(ModelViewSet):
     serializer_class = EstateSerializer
-
     filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
     filterset_class = EstateFilter
     search_fields = ['title', 'description']
     ordering_fields = ['price', 'created_at', 'views']
     ordering = ['-created_at']
 
-    def get_permission_classes(self):
-        permissions = [IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly]
+    def get_permissions(self):
+        self.permission_classes = [IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly]
         if self.action == 'create':
-            permissions.append(IsLandlord)
+            self.permission_classes.append(IsLandlord)
 
-        return permissions
+        return super().get_permissions()
 
     def get_queryset(self):
         filers = [Q(is_active=True)]
